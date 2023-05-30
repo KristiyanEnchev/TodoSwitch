@@ -8,6 +8,14 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
+    using Application;
+
+    using Infrastructure;
+
+    using Persistence;
+
+    using Web.Extentions.Healtchecks;
+
     public static class Startup
     {
         public static IServiceCollection AddWeb(this IServiceCollection services, IConfiguration config)
@@ -17,6 +25,12 @@
             {
                 options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
             });
+
+            services.AddApplication();
+            services.AddInfrastructure(config);
+            services.AddPersistence(config);
+
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             return services;
         }
@@ -50,6 +64,7 @@
         public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)
         {
             builder.MapControllers();
+            builder.MapHealthCheck();
 
             return builder;
         }
