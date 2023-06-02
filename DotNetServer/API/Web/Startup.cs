@@ -15,6 +15,7 @@
     using Persistence;
 
     using Web.Extentions.Healtchecks;
+    using Web.Extentions.Swagger;
 
     public static class Startup
     {
@@ -30,6 +31,7 @@
             services.AddInfrastructure(config);
             services.AddPersistence(config);
 
+            services.AddSwaggerDocumentation();
             services.AddRouting(options => options.LowercaseUrls = true);
 
             return services;
@@ -51,7 +53,7 @@
 
         public static IApplicationBuilder UseWeb(this IApplicationBuilder builder)
         {
-            builder
+            builder.UseSwaggerDocumentation()
                     .UseStaticFiles()
                     .UseHttpsRedirection()
                     .UseRouting()
