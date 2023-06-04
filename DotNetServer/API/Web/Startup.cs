@@ -34,6 +34,8 @@
             services.AddSwaggerDocumentation();
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            services.AddHealth(config);
+
             return services;
         }
 
