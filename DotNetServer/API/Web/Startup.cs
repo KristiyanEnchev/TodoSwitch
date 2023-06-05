@@ -9,15 +9,16 @@
     using Microsoft.Extensions.DependencyInjection;
 
     using Application;
+    using Application.Interfaces;
 
     using Infrastructure;
 
     using Persistence;
 
-    using Web.Extentions.Healtchecks;
-    using Web.Extentions.Swagger;
-    using Application.Interfaces;
     using Web.Services;
+    using Web.Extentions.Swagger;
+    using Web.Extentions.Healtchecks;
+    using Web.Extentions.Middleware;
 
     public static class Startup
     {
@@ -61,6 +62,7 @@
             builder.UseSwaggerDocumentation()
                     .UseStaticFiles()
                     .UseHttpsRedirection()
+                    .UseErrorHandler()
                     .UseRouting()
                     .UseAuthentication()
                     .UseAuthorization();
