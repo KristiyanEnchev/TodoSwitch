@@ -16,6 +16,8 @@
 
     using Web.Extentions.Healtchecks;
     using Web.Extentions.Swagger;
+    using Application.Interfaces;
+    using Web.Services;
 
     public static class Startup
     {
@@ -35,6 +37,7 @@
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddHealth(config);
+            services.AddScoped<IUser, CurrentUser>();
 
             return services;
         }
