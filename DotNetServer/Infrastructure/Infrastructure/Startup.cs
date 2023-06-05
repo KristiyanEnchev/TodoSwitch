@@ -5,16 +5,13 @@
 
     using MediatR;
 
-    using Persistence;
-
     public static class Startup
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddServices();
-
-            services.AddPersistence(configuration);
+                .AddServices()
+                .AddConfigurations(configuration);
 
             return services;
         }
@@ -24,6 +21,11 @@
             services
                 .AddTransient<IMediator, Mediator>();
 
+            return services;
+        }
+
+        private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+        {
             return services;
         }
     }
