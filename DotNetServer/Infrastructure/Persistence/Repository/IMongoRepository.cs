@@ -4,9 +4,9 @@
 
     using MongoDB.Driver;
 
-    using Domain.Collections;
+    using Domain.Common.Interfaces;
 
-    public interface IMongoRepository<T> where T : MongoBaseDocument
+    public interface IMongoRepository<T> where T : class, IEntity
     {
         Task<T> GetByIdAsync(string id);
 
