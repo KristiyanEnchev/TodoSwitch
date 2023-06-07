@@ -1,4 +1,4 @@
-﻿namespace Kyub.Auth.Models.Settings
+﻿namespace Models
 {
     public class TokenSettings
     {
