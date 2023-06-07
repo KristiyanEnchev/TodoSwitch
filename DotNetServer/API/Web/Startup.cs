@@ -37,6 +37,8 @@
             services.AddSwaggerDocumentation();
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            services.AddCors();
+
             services.AddHealth(config);
             services.AddScoped<IUser, CurrentUser>();
 
@@ -64,10 +66,24 @@
                     .UseHttpsRedirection()
                     .UseErrorHandler()
                     .UseRouting()
+                    .UseCors("TodoSwitch")
                     .UseAuthentication()
                     .UseAuthorization();
 
             return builder;
+        }
+
+        public static IServiceCollection AddCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("TodoSwitch",
+                    builder => builder.AllowAnyOrigin()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod());
+            });
+
+            return services;
         }
 
         public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder builder)

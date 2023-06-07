@@ -1,4 +1,4 @@
-﻿namespace Kyub.Auth.Data.Models
+﻿namespace Domain.Entities
 {
     using AspNetCore.Identity.MongoDbCore.Models;
 
@@ -9,13 +9,8 @@
     [CollectionName("roles")]
     public class UserRole : MongoIdentityRole<string>, IAuditableEntity
     {
-        public UserRole(string name, string description)
-        {
-            this.Name = name;
-            this.Description = description;
-        }
-
-        public string Description { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
 
         public string? CreatedBy { get; set; }
         public DateTimeOffset? CreatedDate { get; set; }

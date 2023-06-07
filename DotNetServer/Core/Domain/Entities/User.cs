@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities.Identity
+﻿namespace Domain.Entities
 {
     using AspNetCore.Identity.MongoDbCore.Models;
 
