@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Identity.Services
+﻿namespace Infrastructure.Services.Identity
 {
     using System.Text;
     using System.Linq;
@@ -17,7 +17,6 @@
     using Domain.Entities;
     using Infrastructure.Services.Helpers;
     using Amazon.Util.Internal.PlatformServices;
-    using Application.Interfaces;
     using AspNetCore.Identity.MongoDbCore.Models;
     using Infrastructure.Services.Token;
     using Microsoft.IdentityModel.Tokens;
