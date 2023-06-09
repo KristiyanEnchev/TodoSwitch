@@ -6,6 +6,7 @@
     using MediatR;
 
     using Shared;
+
     using Application.Handlers.Identity.Common;
     using Application.Interfaces.Services;
 

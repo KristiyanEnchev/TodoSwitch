@@ -10,7 +10,7 @@
     {
         Task<Result<string>> Register(UserRegisterRequestModel userRequest);
         Task<Result<UserResponseModel>> Login(UserRequestModel userRequest);
-        Task<Result<UserResponseModel>> RefreshTokenAsync(string refreshToken);
+        Task<Result<UserResponseModel>> RefreshTokenAsync(UserRefreshModel request);
         Task<Result<string>> LogoutAsync(string userEmail);
     }
 }

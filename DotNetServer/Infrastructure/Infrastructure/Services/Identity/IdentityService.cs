@@ -1,26 +1,19 @@
 ﻿namespace Infrastructure.Services.Identity
 {
-    using System.Text;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.WebUtilities;
-
-    using Domain.Events;
-    using Domain.Entities.Identity;
 
     using Shared;
-    using Shared.Exceptions;
 
     using Application.Interfaces.Services;
+
     using Domain.Entities;
+
     using Infrastructure.Services.Helpers;
-    using Amazon.Util.Internal.PlatformServices;
-    using AspNetCore.Identity.MongoDbCore.Models;
-    using Infrastructure.Services.Token;
-    using Microsoft.IdentityModel.Tokens;
-    using System.IdentityModel.Tokens.Jwt;
+
+    using Application.Handlers.Identity.Common;
 
     internal class IdentityService : IIdentity
     {
@@ -35,6 +28,23 @@
             this.userManager = userManager;
             this.jwtGenerator = jwtGenerator;
             this.signInManager = signInManager;
+        }
+
+        public async Task<UserResponseModel> GenerateToken(User user)
+        {
+            string ipAddress = IpHelper.GetIpAddress();
+
+            var token = await jwtGenerator.GenerateTokenAsync(user, ipAddress);
+
+            var newRefreshToken = await jwtGenerator.GenerateRefreshToken(user);
+
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            await userManager.UpdateAsync(user);
+
+            var tokenResult = new UserResponseModel(token, user.RefreshTokenExpiryTime, newRefreshToken);
+
+            return tokenResult;
         }
 
         public async Task<Result<string>> Register(UserRegisterRequestModel userRequest)
@@ -95,13 +105,34 @@
                 return Result<UserResponseModel>.Failure(new List<string> { InvalidErrorMessage });
             }
 
-            string ipAddress = IpHelper.GetIpAddress();
-
-            var tokenResult = await jwtGenerator.GenerateTokenAsync(user, ipAddress);
+            var tokenResult = await GenerateToken(user);
 
             return Result<UserResponseModel>.SuccessResult(tokenResult);
         }
 
+        public async Task<Result<UserResponseModel>> RefreshTokenAsync(UserRefreshModel request)
+        {
+            var user = await userManager.FindByEmailAsync(request.Email);
+
+            if (user == null)
+            {
+                return Result<UserResponseModel>.Failure(new List<string> { InvalidErrorMessage });
+            }
+
+            string oldRefreshToken = await userManager.GetAuthenticationTokenAsync(user, "TodoSwitch", "RefreshToken");
+            bool isValid = await userManager.VerifyUserTokenAsync(user, "TodoSwitch", "RefreshToken", request.RefreshToken);
+
+            if (oldRefreshToken == null || !oldRefreshToken.Equals(request.RefreshToken) || !isValid)
+            {
+                return Result<UserResponseModel>.Failure(new List<string> { $"Your token is not valid." });
+            }
+
+            var tokenResult = await GenerateToken(user);
+
+            await signInManager.SignInAsync(user, false);
+
+            return Result<UserResponseModel>.SuccessResult(tokenResult);
+        }
 
         public async Task<Result<string>> LogoutAsync(string userEmail)
         {
