@@ -7,15 +7,15 @@
 
     using MediatR;
 
-    using Application.Interfaces;
+    using Application.Interfaces.Services;
     using Application.Handlers.Identity.Common;
 
     using Shared;
 
     public class UserRefreshCommand : UserRefreshModel, IRequest<Result<UserResponseModel>>
     {
-        public UserRefreshCommand(string refreshToken)
-            : base(refreshToken)
+        public UserRefreshCommand(string email, string refreshToken)
+            : base(email, refreshToken)
         {
         }
 
@@ -39,7 +39,7 @@
                     return Result<UserResponseModel>.Failure("Authorization token is missing.");
                 }
 
-                var result = await identity.RefreshTokenAsync(request.RefreshToken);
+                var result = await identity.RefreshTokenAsync(request);
 
                 return result;
             }
