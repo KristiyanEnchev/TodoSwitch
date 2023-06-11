@@ -14,6 +14,11 @@
 
     using Models;
 
+    using Infrastructure.Services.Identity;
+    using Infrastructure.Services.Token;
+
+    using Application.Interfaces.Services;
+
     public static class Startup
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
@@ -40,6 +45,8 @@
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services
+                .AddTransient<IIdentity, IdentityService>()
+                .AddTransient<IJwtService, JwtService>()
                 .AddIdentity<User, UserRole>(options =>
                 {
                     options.Password.RequireDigit = false;

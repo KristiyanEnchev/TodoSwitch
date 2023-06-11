@@ -23,7 +23,7 @@
             {
                 if (result.Errors != null)
                 {
-                    return new BadRequestObjectResult(response);
+                    return new BadRequestObjectResult(new { Errors = response.errors});
                 }
                 return new BadRequestObjectResult("Unexpected Error occured");
             }
