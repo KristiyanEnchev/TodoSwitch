@@ -1,7 +1,8 @@
 ﻿namespace Persistence.Initializers
 {
-    using MongoDB.Bson;
     using MongoDB.Driver;
+
+    using Domain.Entities;
 
     public class DbInitializer : IDbInitializer
     {
@@ -14,26 +15,65 @@
 
         public async Task Initialize()
         {
-            await CreateIndexes();
-            await CreateCollections();
+            await CreateCollectionsAsync();
+            await CreateIndexesAsync();
         }
 
-        private async Task CreateCollections()
+        private async Task CreateCollectionsAsync()
         {
-            var collectionList = _database.ListCollectionNames().ToList();
-            if (!collectionList.Contains("users"))
+            var collectionNames = await _database.ListCollectionNamesAsync();
+            var collections = await collectionNames.ToListAsync();
+
+            if (!collections.Contains("users"))
             {
-                _database.CreateCollection("users");
+                await _database.CreateCollectionAsync("users");
+            }
+
+            if (!collections.Contains("roles"))
+            {
+                await _database.CreateCollectionAsync("roles");
+            }
+
+            if (!collections.Contains("todolists"))
+            {
+                await _database.CreateCollectionAsync("todolists");
+            }
+
+            if (!collections.Contains("todoitems"))
+            {
+                await _database.CreateCollectionAsync("todoitems");
             }
         }
 
-        private async Task CreateIndexes()
+        private async Task CreateIndexesAsync()
         {
-            var usersCollection = _database.GetCollection<BsonDocument>("users");
-            var indexOptions = new CreateIndexOptions { Unique = true };
-            var indexKeys = Builders<BsonDocument>.IndexKeys.Ascending("Email");
-            var indexModel = new CreateIndexModel<BsonDocument>(indexKeys, indexOptions);
-            usersCollection.Indexes.CreateOne(indexModel);
+            var usersCollection = _database.GetCollection<User>("users");
+            var rolesCollection = _database.GetCollection<UserRole>("roles");
+            var todoListsCollection = _database.GetCollection<TodoList>("todolists");
+            var todoItemsCollection = _database.GetCollection<TodoItem>("todoitems");
+
+            var userEmailIndexModel = new CreateIndexModel<User>(
+                Builders<User>.IndexKeys.Ascending(u => u.Email),
+                new CreateIndexOptions { Unique = true }
+            );
+
+            var roleNameIndexModel = new CreateIndexModel<UserRole>(
+                Builders<UserRole>.IndexKeys.Ascending(r => r.Name),
+                new CreateIndexOptions { Unique = true }
+            );
+
+            var todoListUserIdIndexModel = new CreateIndexModel<TodoList>(
+                Builders<TodoList>.IndexKeys.Ascending(tl => tl.UserId)
+            );
+
+            var todoItemListIdIndexModel = new CreateIndexModel<TodoItem>(
+                Builders<TodoItem>.IndexKeys.Ascending(ti => ti.ListId)
+            );
+
+            await usersCollection.Indexes.CreateOneAsync(userEmailIndexModel);
+            await rolesCollection.Indexes.CreateOneAsync(roleNameIndexModel);
+            await todoListsCollection.Indexes.CreateOneAsync(todoListUserIdIndexModel);
+            await todoItemsCollection.Indexes.CreateOneAsync(todoItemListIdIndexModel);
         }
     }
 }

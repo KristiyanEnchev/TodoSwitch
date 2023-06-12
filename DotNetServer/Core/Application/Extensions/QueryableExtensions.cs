@@ -19,8 +19,18 @@
             return PaginatedResult<T>.Create(items, count, pageNumber, pageSize);
         }
 
+        public static PaginatedResult<T> ToPaginatedList<T>(this IQueryable<T> source, int pageNumber, int pageSize) where T : class
+        {
+            pageNumber = pageNumber == 0 ? 1 : pageNumber;
+            pageSize = pageSize == 0 ? 10 : pageSize;
+            int count =  source.Count();
+            pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+            List<T> items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            return PaginatedResult<T>.Create(items, count, pageNumber, pageSize);
+        }
+
         public static async Task<PaginatedResult<TResult>> ToPaginatedListAsync<TSource, TResult>(
-            this IMongoQueryable<TSource> source,
+            this IQueryable<TSource> source,
             int pageNumber,
             int pageSize,
             Func<TSource, TResult> mapper,
@@ -30,9 +40,9 @@
         {
             pageNumber = pageNumber == 0 ? 1 : pageNumber;
             pageSize = pageSize == 0 ? 10 : pageSize;
-            int count = await source.CountAsync(cancellationToken);
+            int count = source.Count();
             pageNumber = pageNumber <= 0 ? 1 : pageNumber;
-            List<TSource> items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
+            List<TSource> items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             List<TResult> mappedItems = items.Select(mapper).ToList();
             return PaginatedResult<TResult>.Create(mappedItems, count, pageNumber, pageSize);
         }

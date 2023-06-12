@@ -33,6 +33,14 @@
                 return new NoContentResult();
             }
 
+            if (response.data is string)
+            {
+                return new OkObjectResult(new
+                {
+                    message = result.Data,
+                });
+            }
+
             return new OkObjectResult(response.data);
         }
     }

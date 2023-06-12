@@ -1,10 +1,8 @@
 ﻿namespace Persistence.Initializers
 {
-    using System;
-    using System.Data;
-
     using Microsoft.AspNetCore.Identity;
 
+    using MongoDB.Bson;
     using MongoDB.Driver;
 
     using Domain.Entities;
@@ -30,27 +28,35 @@
                 await TrySeedUsersAsync();
             }
 
-            var todoListCollection = _database.GetCollection<TodoList>("todolist");
-            var todoItemCollection = _database.GetCollection<TodoItem>("todoitem");
-            if (await todoListCollection.CountDocumentsAsync(_ => true) == 0)
+            var users = await usersCollection.Find(_ => true).ToListAsync();
+            if (!users.Any(u => u.TodoLists.Any()))
             {
-                var random = new Random();
-                var colours = Colour.SupportedColours.ToList();
-                var priorities = Enum.GetValues(typeof(PriorityLevel)).Cast<PriorityLevel>().ToList();
+                await SeedTodoListsAsync(users);
+            }
+        }
 
-                var todoLists = new List<TodoList>();
-                var idlist = new List<string> { "9d0155b3-64d0-4d30-b802-0c2bd1086296", "58efac42-e31d-4039-bfe1-76672c615dd5", "8e9ce019-4ef0-45bc-8ec1-bc2ced9b1e16" };
+        private async Task SeedTodoListsAsync(List<User> users)
+        {
+            var todoListCollection = _database.GetCollection<TodoList>("todolists");
+            var todoItemCollection = _database.GetCollection<TodoItem>("todoitems");
 
+            var random = new Random();
+            var colors = Color.SupportedColors.ToList();
+            var priorities = Enum.GetValues(typeof(PriorityLevel)).Cast<PriorityLevel>().ToList();
+
+            foreach (var user in users)
+            {
                 for (int i = 0; i < 3; i++)
                 {
                     var todoList = new TodoList
                     {
-                        UserId = idlist[i],
+                        Id = ObjectId.GenerateNewId().ToString(),
+                        UserId = user.Id,
                         Title = $"Task List {i + 1}",
-                        Colour = colours[random.Next(colours.Count)],
+                        Color = colors[random.Next(colors.Count)],
                         CreatedBy = "Seeder",
                         CreatedOn = DateTime.UtcNow,
-                        Items = new List<TodoItem>()
+                        TodoItems = new List<TodoItem>()
                     };
 
                     int itemsCount = random.Next(5, 15);
@@ -58,25 +64,30 @@
                     {
                         var todoItem = new TodoItem
                         {
+                            Id = ObjectId.GenerateNewId().ToString(),
                             ListId = todoList.Id,
                             Title = $"Task {j + 1}",
                             Note = "This is a seeded task",
                             Priority = priorities[random.Next(priorities.Count)],
                             Reminder = DateTime.UtcNow.AddDays(random.Next(1, 30)),
-                            Done = random.NextDouble() >= 0.5,
+                            IsDone = random.NextDouble() >= 0.5,
                             OrderIndex = j,
                             CreatedBy = "Seeder",
                             CreatedOn = DateTime.UtcNow,
                         };
-                        todoList.Items.Add(todoItem);
+                        todoList.TodoItems.Add(todoItem);
+
                         await todoItemCollection.InsertOneAsync(todoItem);
                     }
+                    user.TodoLists.Add(todoList);
 
-                    todoLists.Add(todoList);
+                    await todoListCollection.InsertOneAsync(todoList);
                 }
-                await todoListCollection.InsertManyAsync(todoLists);
+                var usersCollection = _database.GetCollection<User>("users");
+                await usersCollection.ReplaceOneAsync(u => u.Id == user.Id, user);
             }
         }
+
         public async Task TrySeedUsersAsync()
         {
             var administratorRole = new UserRole { Name = "Administrator", CreatedBy = "Seeder", CreatedOn = DateTime.UtcNow };
@@ -102,6 +113,7 @@
                 IsActive = true,
                 CreatedBy = "Initial Seed",
                 EmailConfirmed = true,
+                TodoLists = new List<TodoList>()
             };
 
             if (_userManager.Users.All(u => u.UserName != administrator.UserName))
@@ -123,6 +135,7 @@
                 IsActive = true,
                 CreatedBy = "Initial Seed",
                 EmailConfirmed = true,
+                TodoLists = new List<TodoList>()
             };
             var user2 = new User
             {
@@ -134,9 +147,10 @@
                 IsActive = true,
                 CreatedBy = "Initial Seed",
                 EmailConfirmed = true,
+                TodoLists = new List<TodoList>()
             };
 
-            await _userManager.CreateAsync(user1, "123456");
+            var some = await _userManager.CreateAsync(user1, "123456");
             if (!string.IsNullOrWhiteSpace(userRole.Name))
             {
                 await _userManager.AddToRolesAsync(user1, new[] { userRole.Name });

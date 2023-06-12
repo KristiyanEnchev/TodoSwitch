@@ -1,15 +1,20 @@
 ﻿namespace Domain.Entities
 {
-    using Domain.Attributes;
-    using Domain.Common;
+    using MongoDB.Bson.Serialization.Attributes;
 
-    [BsonCollection("TodoList")]
+    using Domain.Common;
+    using Domain.Attributes;
+
+    [BsonCollection("todolists")]
     public class TodoList : BaseAuditableEntity
     {
-        public string? UserId { get; set; }
-        public string? Title { get; set; }
-        public Colour Colour { get; set; } = Colour.White;
+        public string UserId { get; set; }
 
-        public IList<TodoItem> Items { get; set; } = new List<TodoItem>();
+        [BsonElement("Title")]
+        public string? Title { get; set; }
+        public Color Color { get; set; } = Color.White;
+
+        [BsonElement("TodoItems")]
+        public IList<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
     }
 }

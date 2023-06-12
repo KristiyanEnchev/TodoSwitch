@@ -16,9 +16,11 @@
 
     using Infrastructure.Services.Identity;
     using Infrastructure.Services.Token;
+    using Infrastructure.Services.Todo;
+    using Infrastructure.Services.Background;
 
     using Application.Interfaces.Services;
-    using Infrastructure.Services.Todo;
+
     using Persistence.Initializers;
 
     public static class Startup
@@ -36,9 +38,15 @@
 
         private static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services
-                .AddTransient<ITodoService, TodoService>()
-                .AddTransient<IMediator, Mediator>();
+            services.AddMemoryCache();
+            services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+            services.AddHostedService<QueuedHostedService>();
+            services.AddScoped<ITodoBackgroundJobService, TodoBackgroundJobService>();
+
+            services.AddTransient<ITodoService, TodoService>();
+            services.AddTransient<IMediator, Mediator>();
+
+            services.AddScoped<ICachedTodoService, CachedTodoService>();
 
             return services;
         }

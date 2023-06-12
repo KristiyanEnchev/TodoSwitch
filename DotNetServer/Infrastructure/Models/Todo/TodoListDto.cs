@@ -10,24 +10,21 @@
     {
         public TodoListDto()
         {
-            Items = Array.Empty<TodoItemDto>();
+            TodoItems = new HashSet<TodoItemDto>();
         }
 
         public string? Id { get; init; }
-
         public string? Title { get; init; }
-
-        public string? Colour { get; init; }
-
-        public IReadOnlyCollection<TodoItemDto> Items { get; set; }
+        public string? Color { get; init; }
+        public IReadOnlyCollection<TodoItemDto> TodoItems { get; set; }
 
         public virtual void Mapping(Profile mapper)
         {
             mapper.CreateMap<TodoList, TodoListDto>()
-                .AfterMap((src, dest) => dest.Items = dest.Items.OrderBy(x => x.OrderIndex).ToArray());
+                .AfterMap((src, dest) => dest.TodoItems = dest.TodoItems.OrderBy(x => x.OrderIndex).ToList());
 
             mapper.CreateMap<TodoListDto, TodoList>()
-                .AfterMap((src, dest) => dest.Items = dest.Items.OrderBy(x => x.OrderIndex).ToList());
+                .AfterMap((src, dest) => dest.TodoItems = dest.TodoItems.OrderBy(x => x.OrderIndex).ToList());
         }
     }
 }

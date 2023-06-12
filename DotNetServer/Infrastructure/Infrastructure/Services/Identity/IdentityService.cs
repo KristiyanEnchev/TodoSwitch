@@ -8,12 +8,11 @@
     using Shared;
 
     using Application.Interfaces.Services;
+    using Application.Handlers.Identity.Common;
 
     using Domain.Entities;
 
     using Infrastructure.Services.Helpers;
-
-    using Application.Handlers.Identity.Common;
 
     internal class IdentityService : IIdentity
     {

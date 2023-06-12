@@ -6,7 +6,7 @@
 
     using Shared;
 
-    public interface ITodoService
+    public interface ICachedTodoService
     {
         Task<List<SupportedColorDto>> GetAllSupportedListColors();
         Task<Result<List<GetUserTodoListsDto>>> GetUserTodoListsAsync(string userId);
