@@ -18,6 +18,8 @@
     using Infrastructure.Services.Token;
 
     using Application.Interfaces.Services;
+    using Infrastructure.Services.Todo;
+    using Persistence.Initializers;
 
     public static class Startup
     {
@@ -35,9 +37,22 @@
         private static IServiceCollection AddServices(this IServiceCollection services)
         {
             services
+                .AddTransient<ITodoService, TodoService>()
                 .AddTransient<IMediator, Mediator>();
 
             return services;
+        }
+
+        public static async Task InitializeDatabase(this IServiceProvider services)
+        {
+            using var scope = services.CreateScope();
+
+            var initialiser = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+            var seeder = scope.ServiceProvider.GetRequiredService<DbSeeder>();
+
+            await initialiser.Initialize();
+
+            await seeder.SeedData();
         }
 
         public static IServiceCollection AddIdentity(this IServiceCollection services, IConfiguration configuration)

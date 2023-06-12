@@ -64,7 +64,6 @@
                 UserName = userRequest.Email,
                 IsActive = true,
                 CreatedBy = "Registration",
-                CreatedDate = DateTime.UtcNow,
             };
 
             var createUserResult = await userManager.CreateAsync(user, userRequest.Password);

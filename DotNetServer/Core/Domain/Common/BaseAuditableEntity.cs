@@ -5,8 +5,8 @@
     public abstract class BaseAuditableEntity : BaseEntity, IAuditableEntity
     {
         public string? CreatedBy { get; set; }
-        public DateTimeOffset? CreatedDate { get; set; }
+        public DateTime? CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
-        public DateTimeOffset? UpdatedDate { get; set; }
+        public DateTime? UpdatedOn { get; set; }
     }
 }

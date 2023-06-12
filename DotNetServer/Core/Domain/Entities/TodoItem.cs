@@ -1,14 +1,19 @@
 ﻿namespace Domain.Entities
 {
+    using Domain.Attributes;
     using Domain.Common;
+
+    [BsonCollection("TodoItem")]
 
     public class TodoItem : BaseAuditableEntity
     {
-        public int ListId { get; set; }
+        public string? ListId { get; set; }
 
         public string? Title { get; set; }
 
         public string? Note { get; set; }
+
+        public int OrderIndex { get; set; }
 
         public PriorityLevel Priority { get; set; }
 

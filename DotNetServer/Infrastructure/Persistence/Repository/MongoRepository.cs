@@ -3,6 +3,7 @@
     using System.Linq.Expressions;
 
     using MongoDB.Driver;
+    using MongoDB.Driver.Linq;
 
     using Domain.Attributes;
     using Domain.Common;
@@ -47,14 +48,14 @@
         public async Task<ICollection<T>> FindDistinctAsync(string field, FilterDefinition<T> filter)
             => (ICollection<T>)await Collection.DistinctAsync<T>(field, filter);
 
-        public async Task<T> GetByIdAsync(string id)
-            => await GetAsync(e => e.Id == id);
+        //public async Task<T> GetByIdAsync(string id)
+        //    => await GetAsync(e => e.Id == id);
 
         public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
             => await Collection.Find(predicate).SingleOrDefaultAsync();
 
-        public async Task UpdateAsync(T entity)
-            => await Collection.ReplaceOneAsync(Builders<T>.Filter.Eq("_id", entity.Id), entity, new ReplaceOptions { IsUpsert = true });
+        //public async Task UpdateAsync(T entity)
+        //    => await Collection.ReplaceOneAsync(Builders<T>.Filter.Eq("_id", entity.Id), entity, new ReplaceOptions { IsUpsert = true });
 
         public async Task InsertAsync(T entity)
         => await Collection.InsertOneAsync(entity);
@@ -64,5 +65,41 @@
 
         public List<T> GetAll()
             => Collection.Find(Builders<T>.Filter.Empty).ToList();
+
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await Collection.Find(_ => true).ToListAsync();
+        }
+
+        public IMongoQueryable<T> AsQueryable()
+        {
+            return Collection.AsQueryable();
+        }
+
+        public IMongoQueryable<T> Entities => Collection.AsQueryable();
+
+        public async Task<T> GetByIdAsync(string id)
+        {
+            var filter = Builders<T>.Filter.Eq("_id", id);
+            return await Collection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateAsync(T entity)
+        {
+            var idProperty = typeof(T).GetProperty("Id");
+            if (idProperty == null)
+            {
+                throw new InvalidOperationException("Entity does not have an 'Id' property.");
+            }
+
+            var idValue = idProperty.GetValue(entity)?.ToString();
+            if (idValue == null)
+            {
+                throw new InvalidOperationException("Entity 'Id' property is null or empty.");
+            }
+
+            var filter = Builders<T>.Filter.Eq("_id", idValue);
+            await Collection.ReplaceOneAsync(filter, entity);
+        }
     }
 }

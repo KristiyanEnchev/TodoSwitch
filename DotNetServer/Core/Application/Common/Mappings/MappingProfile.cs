@@ -10,7 +10,8 @@
     {
         public MappingProfile()
         {
-            ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+            var modelAssembly = Assembly.GetAssembly(typeof(Models.TokenSettings));
+            ApplyMappingsFromAssembly(modelAssembly!);
         }
 
         private void ApplyMappingsFromAssembly(Assembly assembly)
@@ -45,7 +46,7 @@
                         {
                             var interfaceMethodInfo = @interface.GetMethod(mappingMethodName, argumentTypes);
 
-                            interfaceMethodInfo.Invoke(instance, new object[] { this });
+                            interfaceMethodInfo!.Invoke(instance, new object[] { this });
                         }
                     }
                 }

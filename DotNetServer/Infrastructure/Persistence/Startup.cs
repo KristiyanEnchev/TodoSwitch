@@ -5,6 +5,7 @@
 
     using MongoDB.Driver;
 
+    using Persistence.Initializers;
     using Persistence.Repository;
 
     public static class Startup
@@ -27,6 +28,9 @@
                 var client = sp.GetRequiredService<IMongoClient>();
                 return client.GetDatabase("TodoSwitch");
             });
+
+            services.AddScoped<DbInitializer>();
+            services.AddScoped<DbSeeder>();
 
             return services;
         }

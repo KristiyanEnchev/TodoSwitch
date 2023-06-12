@@ -14,15 +14,16 @@
     {
         public static void AddApplication(this IServiceCollection services)
         {
-            services.AddAutoMapper();
+            services.AddAutoMapperConfig();
             services.AddValidators();
             services.AddMediator();
         }
 
-        private static void AddAutoMapper(this IServiceCollection services)
+        private static void AddAutoMapperConfig(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
+
         private static void AddValidators(this IServiceCollection services)
         {
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

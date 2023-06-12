@@ -4,6 +4,8 @@ namespace Host
 
     using Serilog;
 
+    using Infrastructure;
+
     using Web;
     using Web.Extentions.Logging;
 
@@ -22,6 +24,8 @@ namespace Host
                 builder.Services.AddWeb(builder.Configuration);
 
                 var app = builder.Build();
+
+                await app.Services.InitializeDatabase();
 
                 app.UseWeb();
                 app.MapEndpoints();

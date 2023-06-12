@@ -3,6 +3,7 @@
     using System.Linq.Expressions;
 
     using MongoDB.Driver;
+    using MongoDB.Driver.Linq;
 
     using Domain.Common.Interfaces;
 
@@ -29,5 +30,7 @@
         Task<ICollection<T>> FindDistinctAsync(string field, FilterDefinition<T> filter);
 
         List<T> GetAll();
+        Task<IEnumerable<T>> GetAllAsync();
+        IMongoQueryable<T> Entities { get; }
     }
 }
