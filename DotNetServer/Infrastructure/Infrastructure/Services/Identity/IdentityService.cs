@@ -62,6 +62,7 @@
                 Email = userRequest.Email,
                 UserName = userRequest.Email,
                 IsActive = true,
+                EmailConfirmed = true,
                 CreatedBy = "Registration",
             };
 
