@@ -31,6 +31,9 @@
         {
             var claimTypeFirstName = "FirstName";
             var claimTypeLastName = "LastName";
+            var claimTypeEmail = "Email";
+            var claimTypeUsername = "Username";
+            var claimTypeId = "Id";
 
             var userRoles = await userManager.GetRolesAsync(user);
             var roleClaims = new List<Claim>();
@@ -42,11 +45,11 @@
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(claimTypeId, user.Id.ToString()),
+                new Claim(claimTypeEmail, user.Email!),
                 new Claim(claimTypeFirstName, user.FirstName!),
                 new Claim(claimTypeLastName, user.LastName!),
-                new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(claimTypeUsername, user.UserName!),
                 new Claim("ip", ipAddress)
             }
             .Union(roleClaims);

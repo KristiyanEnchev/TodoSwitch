@@ -18,9 +18,14 @@
         Task<Result<TodoItemDto>> CreateTodoItemAsync(string userId, CreateTodoItemDto todoItemDto);
         Task<Result<string>> DeleteTodoItemAsync(string userId, string todoListId, string todoItemId);
         Task<Result<TodoItemDto>> UpdateTodoItemDescriptionAsync(string userId, string todoListId, string itemId, string title, string note);
-        Task<Result<TodoListDto>> CreateTodoListAsync(string userId, string title, string colorCode);
+        Task<Result<TodoListDto>> CreateTodoListAsync(string userId, string title, string icon, string colorCode);
         Task<Result<string>> DeleteTodoListAsync(string userId, string todoListId);
         Task<Result<TodoListDto>> UpdateTodoListTitleAsync(string userId, string listId, string title);
         Task<Result<TodoListDto>> UpdateTodoListColorAsync(string userId, string todoListId, string colorCode);
+        Task<Result<TodoListDto>> UpdateTodoListOrderIndexAsync(string userId, string todoListId, int newOrderIndex);
+        Task<Result<TodoListDto>> UpdateTodoListAsync(string userId, string todoListId, string title, string icon, string colorCode);
+        Task<Result<TodoListDto>> ReorderItems(string userId, string listId, Dictionary<string, int> changedItems);
+        Task<Result<List<GetUserTodoListsDto>>> ReorderList(string userId, Dictionary<string, int> changedList);
+        void InvalidateAllCache();
     }
 }

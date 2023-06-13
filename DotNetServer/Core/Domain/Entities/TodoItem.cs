@@ -23,7 +23,7 @@
         [BsonElement("Priority")]
         public PriorityLevel Priority { get; set; }
 
-        public DateTime? Reminder { get; set; }
+        public DateTime Reminder { get; set; }
 
         [BsonElement("IsDone")]
         public bool IsDone { get; set; }

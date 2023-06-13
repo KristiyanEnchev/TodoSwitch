@@ -4,12 +4,12 @@
     {
         public UserResponseModel(string token, DateTime refreshTokenExpiryTime, string refreshToken)
         {
-            AccesToken = token;
+            AccessToken = token;
             RefreshTokenExpiryTime = refreshTokenExpiryTime;
             RefreshToken = refreshToken;
         }
 
-        public string AccesToken { get; set; }
+        public string AccessToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
         public string RefreshToken { get; set; }
     }

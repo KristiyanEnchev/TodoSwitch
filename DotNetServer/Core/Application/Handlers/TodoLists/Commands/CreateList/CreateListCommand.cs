@@ -12,12 +12,14 @@
     {
         public string UserId { get; init; }
         public string Title { get; init; }
+        public string Icon { get; init; }
         public string ColorCode { get; init; }
 
-        public CreateListCommand(string userId, string title, string colorCode)
+        public CreateListCommand(string userId, string title, string icon, string colorCode)
         {
             UserId = userId;
             Title = title;
+            Icon = icon;
             ColorCode = colorCode;
         }
 
@@ -32,7 +34,7 @@
 
             public async Task<Result<TodoListDto>> Handle(CreateListCommand request, CancellationToken cancellationToken) 
             {
-                var result = await _service.CreateTodoListAsync(request.UserId, request.Title, request.ColorCode);
+                var result = await _service.CreateTodoListAsync(request.UserId, request.Title,request.Icon, request.ColorCode);
 
                 return result;
             } 

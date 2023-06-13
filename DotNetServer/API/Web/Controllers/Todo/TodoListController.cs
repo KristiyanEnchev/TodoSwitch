@@ -15,7 +15,10 @@
     using Application.Handlers.TodoLists.Commands.UpdateTodoList;
 
     using Web.Extentions;
+    using Microsoft.AspNetCore.Authorization;
+    using Application.Handlers.TodoLists.Commands.UpdateTodoItem;
 
+    [Authorize]
     public class TodoListController : ApiController
     {
         [HttpGet(nameof(GetColors))]
@@ -39,6 +42,13 @@
             return await Mediator.Send(request).ToActionResult();
         }
 
+        [HttpPut(nameof(UpdateList))]
+        [SwaggerOperation("Update Todo List.", "")]
+        public async Task<ActionResult<TodoListDto>> UpdateList(UpdateListCommand request)
+        {
+            return await Mediator.Send(request).ToActionResult();
+        }
+
         [HttpPut(nameof(UpdateTitle))]
         [SwaggerOperation("Update Todo List Title.", "")]
         public async Task<ActionResult<TodoListDto>> UpdateTitle(UpdateListTitleCommand request)
@@ -49,6 +59,20 @@
         [HttpPut(nameof(UpdateColor))]
         [SwaggerOperation("Update Todo List Color.", "")]
         public async Task<ActionResult<TodoListDto>> UpdateColor(UpdateListColorCommand request)
+        {
+            return await Mediator.Send(request).ToActionResult();
+        }
+
+        [HttpPut(nameof(ChangeOrder))]
+        [SwaggerOperation("Change Todo List Order.", "")]
+        public async Task<ActionResult<TodoListDto>> ChangeOrder(UpdateTodoListOrderIndexCommand request)
+        {
+            return await Mediator.Send(request).ToActionResult();
+        }
+
+        [HttpPut(nameof(Reorder))]
+        [SwaggerOperation("Change List Order.", "")]
+        public async Task<ActionResult<List<GetUserTodoListsDto>>> Reorder(UpdateListOrderIndexCommand request)
         {
             return await Mediator.Send(request).ToActionResult();
         }

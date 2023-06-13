@@ -1,12 +1,14 @@
 ﻿namespace Web
 {
     using System.Reflection;
+    using System.Security.Authentication;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.AspNetCore.Server.Kestrel.Https;
 
     using Application;
     using Application.Interfaces;
@@ -45,6 +47,20 @@
             return services;
         }
 
+        public static IWebHostBuilder AddKestrelConfig(IWebHostBuilder builder)
+        {
+            builder.ConfigureKestrel((context, serverOptions) =>
+            {
+                serverOptions.ConfigureHttpsDefaults(options =>
+                {
+                    options.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+                    options.ClientCertificateMode = ClientCertificateMode.AllowCertificate;
+                });
+            });
+
+            return builder;
+        }
+
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IWebHostBuilder hostBulder, IWebHostEnvironment env)
         {
             hostBulder.ConfigureAppConfiguration(config =>
@@ -55,6 +71,8 @@
                 config.AddEnvironmentVariables();
                 config.Build();
             });
+
+            AddKestrelConfig(hostBulder);
 
             return services;
         }
@@ -78,9 +96,11 @@
             services.AddCors(options =>
             {
                 options.AddPolicy("TodoSwitch",
-                    builder => builder.AllowAnyOrigin()
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod());
+                    builder => builder
+                       .AllowAnyHeader()
+                       .AllowAnyMethod()
+                       .AllowCredentials()
+                       .WithOrigins("http://localhost:5173", "http://localhost:3000", "http://localhost:5174"));
             });
 
             return services;

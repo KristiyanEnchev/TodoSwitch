@@ -14,15 +14,13 @@
         public string? ListId { get; set; }
         public int PageNumber { get; init; } = 1;
         public int PageSize { get; init; } = 10;
-        public bool Order { get; }
 
-        public GetPagedTodosForUserQuery(int pageNumber, int pageSize, bool order, string userId, string listId)
+        public GetPagedTodosForUserQuery(int pageNumber, int pageSize, string userId, string listId)
         {
             ListId = listId;
             UserId = userId;
             PageNumber = pageNumber;
             PageSize = pageSize;
-            Order = order;
         }
 
         public class GetPagedTodosQueryHandler : IRequestHandler<GetPagedTodosForUserQuery, PaginatedResult<TodoItemDto>>

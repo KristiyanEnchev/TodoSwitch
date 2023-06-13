@@ -12,7 +12,15 @@
 
         [BsonElement("Title")]
         public string? Title { get; set; }
-        public Color Color { get; set; } = Color.White;
+        public Color Color { get; set; } = Color.Yellow;
+
+
+        [BsonElement("OrderIndex")]
+        public int OrderIndex { get; set; }
+
+
+        [BsonElement("Icon")]
+        public string? Icon { get; set; } = "";
 
         [BsonElement("TodoItems")]
         public IList<TodoItem> TodoItems { get; set; } = new List<TodoItem>();

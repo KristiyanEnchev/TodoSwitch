@@ -66,14 +66,24 @@
                 Builders<TodoList>.IndexKeys.Ascending(tl => tl.UserId)
             );
 
+            var todoListOrderIndexModel = new CreateIndexModel<TodoList>(
+                Builders<TodoList>.IndexKeys.Ascending(tl => tl.OrderIndex)
+            );
+
             var todoItemListIdIndexModel = new CreateIndexModel<TodoItem>(
                 Builders<TodoItem>.IndexKeys.Ascending(ti => ti.ListId)
+            );
+
+            var todoItemOrderIndexModel = new CreateIndexModel<TodoItem>(
+                Builders<TodoItem>.IndexKeys.Ascending(ti => ti.OrderIndex)
             );
 
             await usersCollection.Indexes.CreateOneAsync(userEmailIndexModel);
             await rolesCollection.Indexes.CreateOneAsync(roleNameIndexModel);
             await todoListsCollection.Indexes.CreateOneAsync(todoListUserIdIndexModel);
+            await todoListsCollection.Indexes.CreateOneAsync(todoListOrderIndexModel);
             await todoItemsCollection.Indexes.CreateOneAsync(todoItemListIdIndexModel);
+            await todoItemsCollection.Indexes.CreateOneAsync(todoItemOrderIndexModel);
         }
     }
 }

@@ -23,13 +23,12 @@
         [HttpGet(nameof(GetPagedTodosForUser))]
         [SwaggerOperation("Get all Paged Todos for Specific User.", "")]
         public async Task<ActionResult<PaginatedResult<TodoItemDto>>> GetPagedTodosForUser(
-            [Required] int pageNumber,
-            [Required] int pageSize,
-            [Required] bool order,
+            int pageNumber,
+            int pageSize,
             [Required] string userId,
             [Required] string listId)
         {
-            return await Mediator.Send(new GetPagedTodosForUserQuery(pageNumber, pageSize, order, userId, listId));
+            return await Mediator.Send(new GetPagedTodosForUserQuery(pageNumber, pageSize, userId, listId));
         }
 
         [HttpGet(nameof(GetById))]
@@ -66,6 +65,13 @@
         [HttpPut(nameof(ChangeOrder))]
         [SwaggerOperation("Change Todo Order.", "")]
         public async Task<ActionResult<TodoItemDto>> ChangeOrder(UpdateTodoItemOrderIndexCommand request)
+        {
+            return await Mediator.Send(request).ToActionResult();
+        }
+
+        [HttpPut(nameof(Reorder))]
+        [SwaggerOperation("Change Todos Order.", "")]
+        public async Task<ActionResult<TodoListDto>> Reorder(UpdateItemsOrderIndexCommand request)
         {
             return await Mediator.Send(request).ToActionResult();
         }

@@ -1,5 +1,6 @@
 ﻿namespace Infrastructure.Services.Todo
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.Extensions.Caching.Memory;
@@ -17,11 +18,18 @@
         private readonly ITodoService _todoService;
         private readonly IMemoryCache _cache;
         private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(5);
+        private static readonly List<string> CacheKeys = new();
 
         public CachedTodoService(ITodoService todoService, IMemoryCache cache)
         {
             _todoService = todoService;
             _cache = cache;
+        }
+
+        private void AddToCache<T>(string cacheKey, T item)
+        {
+            _cache.Set(cacheKey, item, _cacheDuration);
+            CacheKeys.Add(cacheKey);
         }
 
         public async Task<Result<List<GetUserTodoListsDto>>> GetUserTodoListsAsync(string userId)
@@ -32,7 +40,7 @@
                 userTodoLists = await _todoService.GetUserTodoListsAsync(userId);
                 if (userTodoLists != null && userTodoLists.Success && userTodoLists.Data != null)
                 {
-                    _cache.Set(cacheKey, userTodoLists, _cacheDuration);
+                    AddToCache(cacheKey, userTodoLists);
                 }
             }
             return userTodoLists;
@@ -46,7 +54,7 @@
                 todoItem = await _todoService.GetTodoItemByIdAsync(userId, listId, itemId);
                 if (todoItem != null && todoItem.Success && todoItem.Data != null)
                 {
-                    _cache.Set(cacheKey, todoItem, _cacheDuration);
+                    AddToCache(cacheKey, todoItem);
                 }
             }
             return todoItem;
@@ -60,7 +68,7 @@
                 paginatedTodoItems = await _todoService.GetTodoItemsForListAsync(userId, todoListId, pageNumber, pageSize, cancellationToken);
                 if (paginatedTodoItems != null)
                 {
-                    _cache.Set(cacheKey, paginatedTodoItems, _cacheDuration);
+                    AddToCache(cacheKey, paginatedTodoItems);
                 }
             }
             return paginatedTodoItems;
@@ -92,6 +100,26 @@
             if (todoItemDto != null && todoItemDto.Success && todoItemDto.Data != null)
             {
                 InvalidateTodoItemCache(userId, todoListId, todoItemId);
+            }
+            return todoItemDto;
+        }
+
+        public async Task<Result<TodoListDto>> ReorderItems(string userId, string listId, Dictionary<string, int> changedItems)
+        {
+            var todoItemDto = await _todoService.ReorderItems(userId, listId, changedItems);
+            if (todoItemDto != null && todoItemDto.Success && todoItemDto.Data != null)
+            {
+                InvalidateTodoItemCache(userId, listId, null);
+            }
+            return todoItemDto;
+        }
+
+        public async Task<Result<List<GetUserTodoListsDto>>> ReorderList(string userId, Dictionary<string, int> changedList)
+        {
+            var todoItemDto = await _todoService.ReorderList(userId, changedList);
+            if (todoItemDto != null && todoItemDto.Success && todoItemDto.Data != null)
+            {
+                InvalidateTodoItemCache(userId, null, null);
             }
             return todoItemDto;
         }
@@ -128,9 +156,9 @@
             return updatedItem;
         }
 
-        public async Task<Result<TodoListDto>> CreateTodoListAsync(string userId, string title, string colorCode)
+        public async Task<Result<TodoListDto>> CreateTodoListAsync(string userId, string title, string icon, string colorCode)
         {
-            var createdList = await _todoService.CreateTodoListAsync(userId, title, colorCode);
+            var createdList = await _todoService.CreateTodoListAsync(userId, title, icon, colorCode);
             if (createdList != null && createdList.Success && createdList.Data != null)
             {
                 InvalidateUserTodoListsCache(userId);
@@ -168,14 +196,33 @@
             return updatedList;
         }
 
+        public async Task<Result<TodoListDto>> UpdateTodoListAsync(string userId, string todoListId, string title, string icon, string colorCode)
+        {
+            var updatedList = await _todoService.UpdateTodoListAsync(userId, todoListId, title, icon, colorCode);
+            if (updatedList != null && updatedList.Success && updatedList.Data != null)
+            {
+                InvalidateUserTodoListsCache(userId);
+            }
+            return updatedList;
+        }
+
+        public async Task<Result<TodoListDto>> UpdateTodoListOrderIndexAsync(string userId, string todoListId, int newOrderIndex)
+        {
+            var todoListDto = await _todoService.UpdateTodoListOrderIndexAsync(userId, todoListId, newOrderIndex);
+            if (todoListDto != null && todoListDto.Success && todoListDto.Data != null)
+            {
+                InvalidateUserTodoListsCache(userId);
+            }
+            return todoListDto;
+        }
+
         public async Task<List<SupportedColorDto>> GetAllSupportedListColors()
         {
             string cacheKey = $"SupportedColors";
             if (!_cache.TryGetValue(cacheKey, out List<SupportedColorDto> supportedColors))
             {
                 supportedColors = await _todoService.GetAllSupportedListColors();
-
-                _cache.Set(cacheKey, supportedColors, _cacheDuration);
+                AddToCache(cacheKey, supportedColors);
             }
 
             return supportedColors;
@@ -183,14 +230,34 @@
 
         private void InvalidateUserTodoListsCache(string userId)
         {
-            _cache.Remove($"UserTodoLists_{userId}");
+            string cacheKey = $"UserTodoLists_{userId}";
+            _cache.Remove(cacheKey);
+            CacheKeys.Remove(cacheKey);
         }
 
         private void InvalidateTodoItemCache(string userId, string listId, string itemId)
         {
-            _cache.Remove($"TodoItem_{userId}_{listId}_{itemId}");
-            _cache.Remove($"TodoItem_{userId}_{listId}");
-            _cache.Remove($"TodoItem_{listId}_{itemId}");
+            string cacheKey1 = $"TodoItem_{userId}_{listId}_{itemId}";
+            string cacheKey2 = $"TodoItem_{userId}_{listId}";
+            string cacheKey3 = $"TodoItem_{listId}_{itemId}";
+
+            _cache.Remove(cacheKey1);
+            _cache.Remove(cacheKey2);
+            _cache.Remove(cacheKey3);
+            CacheKeys.Remove(cacheKey1);
+            CacheKeys.Remove(cacheKey2);
+            CacheKeys.Remove(cacheKey3);
+
+            InvalidateUserTodoListsCache(userId);
+        }
+
+        public void InvalidateAllCache()
+        {
+            foreach (var cacheKey in CacheKeys)
+            {
+                _cache.Remove(cacheKey);
+            }
+            CacheKeys.Clear();
         }
     }
 }

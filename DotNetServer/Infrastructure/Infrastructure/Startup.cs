@@ -43,6 +43,7 @@
             services.AddHostedService<QueuedHostedService>();
             services.AddScoped<ITodoBackgroundJobService, TodoBackgroundJobService>();
 
+            services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<ITodoService, TodoService>();
             services.AddTransient<IMediator, Mediator>();
 
