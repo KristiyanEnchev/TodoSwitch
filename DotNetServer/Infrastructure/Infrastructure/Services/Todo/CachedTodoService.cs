@@ -146,9 +146,9 @@
             return deletedItemId;
         }
 
-        public async Task<Result<TodoItemDto>> UpdateTodoItemDescriptionAsync(string userId, string todoListId, string itemId, string title, string note)
+        public async Task<Result<TodoItemDto>> UpdateTodoItemAsync(string userId, string todoListId, string itemId, string title, string note, PriorityLevel priority)
         {
-            var updatedItem = await _todoService.UpdateTodoItemDescriptionAsync(userId, todoListId, itemId, title, note);
+            var updatedItem = await _todoService.UpdateTodoItemAsync(userId, todoListId, itemId, title, note, priority);
             if (updatedItem != null && updatedItem.Success && updatedItem.Data != null)
             {
                 InvalidateTodoItemCache(userId, todoListId, itemId);

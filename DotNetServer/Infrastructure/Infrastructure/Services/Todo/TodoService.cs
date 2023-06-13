@@ -275,100 +275,6 @@
             return Result<List<GetUserTodoListsDto>>.SuccessResult(todoListDto, "Order updated successfully");
         }
 
-        //// Method to change the order index of a TodoItem for a specific user's list
-        //public async Task<Result<TodoItemDto>> UpdateTodoItemOrderIndexAsync(string userId, string todoListId, string todoItemId, int newOrderIndex)
-        //{
-        //    var todo = new TodoItemDto();
-
-        //    var user = await userManager.FindByIdAsync(userId);
-        //    if (user == null)
-        //    {
-        //        return Result<TodoItemDto>.Failure("No Such User");
-        //    }
-
-        //    var todoList = user.TodoLists.FirstOrDefault(tl => tl.Id == todoListId);
-        //    if (todoList == null)
-        //    {
-        //        return Result<TodoItemDto>.Failure("No Such List for this User");
-        //    }
-
-        //    var todoItem = todoList.TodoItems.FirstOrDefault(ti => ti.Id == todoItemId);
-        //    if (todoItem == null)
-        //    {
-        //        return Result<TodoItemDto>.Failure("No Such Item for this List");
-        //    }
-
-        //    int maxIndex = todoList.TodoItems.Count - 1;
-        //    int adjustedOrderIndex = Math.Max(0, Math.Min(newOrderIndex, maxIndex));
-
-        //    todoList.TodoItems.Remove(todoItem);
-        //    todoList.TodoItems.Insert(adjustedOrderIndex, todoItem);
-
-        //    for (int i = 0; i < todoList.TodoItems.Count; i++)
-        //    {
-        //        todoList.TodoItems[i].OrderIndex = i;
-        //    }
-
-        //    await userManager.UpdateAsync(user);
-
-        //    var batchTasks = todoList.TodoItems.Select(item =>
-        //        _backgroundJobService.QueueUpdateTodoItemAsync(item.Id, updatedItem =>
-        //        {
-        //            updatedItem.OrderIndex = item.OrderIndex;
-        //        })
-        //    );
-
-        //    await Task.WhenAll(batchTasks);
-
-        //    todo = _mapper.Map<TodoItemDto>(todoItem);
-
-        //    return Result<TodoItemDto>.SuccessResult(todo);
-        //}
-
-        //// Method to change the order index of a TodoList for a specific user
-        //public async Task<Result<TodoListDto>> UpdateTodoListOrderIndexAsync(string userId, string todoListId, int newOrderIndex)
-        //{
-        //    var todo = new TodoListDto();
-
-        //    var user = await userManager.FindByIdAsync(userId);
-        //    if (user == null)
-        //    {
-        //        return Result<TodoListDto>.Failure("No Such User");
-        //    }
-
-        //    var todoList = user.TodoLists.FirstOrDefault(tl => tl.Id == todoListId);
-        //    if (todoList == null)
-        //    {
-        //        return Result<TodoListDto>.Failure("No Such List for this User");
-        //    }
-
-        //    int maxIndex = user.TodoLists.Count - 1;
-        //    int adjustedOrderIndex = Math.Max(0, Math.Min(newOrderIndex, maxIndex));
-
-        //    user.TodoLists.Remove(todoList);
-        //    user.TodoLists.Insert(adjustedOrderIndex, todoList);
-
-        //    for (int i = 0; i < user.TodoLists.Count; i++)
-        //    {
-        //        user.TodoLists[i].OrderIndex = i;
-        //    }
-
-        //    await userManager.UpdateAsync(user);
-
-        //    var batchTasks = user.TodoLists.Select(item =>
-        //        _backgroundJobService.QueueUpdateTodoItemAsync(item.Id, updatedItem =>
-        //        {
-        //            updatedItem.OrderIndex = item.OrderIndex;
-        //        })
-        //    );
-
-        //    await Task.WhenAll(batchTasks);
-
-        //    todo = _mapper.Map<TodoListDto>(todoList);
-
-        //    return Result<TodoListDto>.SuccessResult(todo);
-        //}
-
         // Method to create a TodoItem
         public async Task<Result<TodoItemDto>> CreateTodoItemAsync(string userId, CreateTodoItemDto todoItemDto)
         {
@@ -433,7 +339,7 @@
         }
 
         // Method to update a TodoItem Descriptions
-        public async Task<Result<TodoItemDto>> UpdateTodoItemDescriptionAsync(string userId, string todoListId, string itemId, string title, string note)
+        public async Task<Result<TodoItemDto>> UpdateTodoItemAsync(string userId, string todoListId, string itemId, string title, string note, PriorityLevel priority)
         {
             var user = await userManager.FindByIdAsync(userId);
             if (user == null)
@@ -463,6 +369,12 @@
             {
                 todoItem.Note = note;
                 await _backgroundJobService.QueueUpdateTodoItemAsync(todoItem.Id, item => item.Note = note);
+            }
+
+            if (!string.IsNullOrEmpty(note))
+            {
+                todoItem.Priority = priority;
+                await _backgroundJobService.QueueUpdateTodoItemAsync(todoItem.Id, item => item.Priority = priority);
             }
 
             await userManager.UpdateAsync(user);

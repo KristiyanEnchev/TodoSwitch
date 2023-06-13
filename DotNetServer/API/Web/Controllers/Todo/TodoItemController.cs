@@ -76,9 +76,9 @@
             return await Mediator.Send(request).ToActionResult();
         }
 
-        [HttpPut(nameof(UpdateDescription))]
+        [HttpPut(nameof(UpdateItem))]
         [SwaggerOperation("Update Todo Title or Note.", "")]
-        public async Task<ActionResult<TodoItemDto>> UpdateDescription(UpdateTodoDescrioptionCommand request)
+        public async Task<ActionResult<TodoItemDto>> UpdateItem(UpdateTodoDescrioptionCommand request)
         {
             return await Mediator.Send(request).ToActionResult();
         }

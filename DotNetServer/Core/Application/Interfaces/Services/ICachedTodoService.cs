@@ -17,7 +17,7 @@
         Task<Result<TodoItemDto>> UpdateTodoItemOrderIndexAsync(string userId, string todoListId, string todoItemId, int newOrderIndex);
         Task<Result<TodoItemDto>> CreateTodoItemAsync(string userId, CreateTodoItemDto todoItemDto);
         Task<Result<string>> DeleteTodoItemAsync(string userId, string todoListId, string todoItemId);
-        Task<Result<TodoItemDto>> UpdateTodoItemDescriptionAsync(string userId, string todoListId, string itemId, string title, string note);
+        Task<Result<TodoItemDto>> UpdateTodoItemAsync(string userId, string todoListId, string itemId, string title, string note, PriorityLevel priority);
         Task<Result<TodoListDto>> CreateTodoListAsync(string userId, string title, string icon, string colorCode);
         Task<Result<string>> DeleteTodoListAsync(string userId, string todoListId);
         Task<Result<TodoListDto>> UpdateTodoListTitleAsync(string userId, string listId, string title);
