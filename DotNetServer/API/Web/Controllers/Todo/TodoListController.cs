@@ -4,19 +4,18 @@
     using System.ComponentModel.DataAnnotations;
 
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Authorization;
 
     using Swashbuckle.AspNetCore.Annotations;
 
     using Models.Todo;
 
+    using Web.Extentions;
+
     using Application.Handlers.TodoLists.Queries.GetList;
     using Application.Handlers.TodoLists.Commands.CreateList;
     using Application.Handlers.TodoLists.Commands.DeleteList;
     using Application.Handlers.TodoLists.Commands.UpdateTodoList;
-
-    using Web.Extentions;
-    using Microsoft.AspNetCore.Authorization;
-    using Application.Handlers.TodoLists.Commands.UpdateTodoItem;
 
     [Authorize]
     public class TodoListController : ApiController

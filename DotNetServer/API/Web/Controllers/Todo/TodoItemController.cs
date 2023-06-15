@@ -4,20 +4,22 @@
     using System.ComponentModel.DataAnnotations;
 
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Authorization;
 
     using Swashbuckle.AspNetCore.Annotations;
 
     using Models.Todo;
+
+    using Shared;
+
+    using Web.Extentions;
 
     using Application.Handlers.TodoLists.Queries.GetTodos;
     using Application.Handlers.TodoLists.Commands.UpdateTodoItem;
     using Application.Handlers.TodoLists.Commands.DeleteTodoItem;
     using Application.Handlers.TodoLists.Commands.CreateTodoItem;
 
-    using Shared;
-
-    using Web.Extentions;
-
+    [Authorize]
     public class TodoItemController : ApiController
     {
         [HttpGet(nameof(GetPagedTodosForUser))]
