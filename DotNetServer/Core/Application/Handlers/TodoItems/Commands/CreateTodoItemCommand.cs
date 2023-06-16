@@ -1,4 +1,4 @@
-﻿namespace Application.Handlers.TodoLists.Commands.CreateTodoItem
+﻿namespace Application.Handlers.TodoItems.Commands
 {
     using MediatR;
 
@@ -19,7 +19,7 @@
             Todo = todo;
         }
 
-        public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, Result<TodoItemDto>> 
+        public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, Result<TodoItemDto>>
         {
             private readonly ICachedTodoService _todoService;
 
@@ -28,7 +28,7 @@
                 _todoService = todoService;
             }
 
-            public async Task<Result<TodoItemDto>> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken) 
+            public async Task<Result<TodoItemDto>> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken)
             {
                 var result = await _todoService.CreateTodoItemAsync(request.UserId, request.Todo);
 

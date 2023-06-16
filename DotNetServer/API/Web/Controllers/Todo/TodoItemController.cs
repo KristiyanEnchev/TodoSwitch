@@ -16,8 +16,8 @@
 
     using Application.Handlers.TodoLists.Commands.UpdateTodoItem;
     using Application.Handlers.TodoLists.Commands.DeleteTodoItem;
-    using Application.Handlers.TodoLists.Commands.CreateTodoItem;
     using Application.Handlers.TodoItems.Queries.GetTodos;
+    using Application.Handlers.TodoItems.Commands;
 
     [Authorize]
     public class TodoItemController : ApiController

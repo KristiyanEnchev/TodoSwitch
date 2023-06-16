@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Handlers\TodoItems\Commands\" />
+	  <Folder Include="Handlers\TodoLists\Commands\CreateTodoItem\" />
 	</ItemGroup>
 
 </Project>
