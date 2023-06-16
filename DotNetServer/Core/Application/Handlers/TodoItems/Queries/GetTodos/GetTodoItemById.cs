@@ -1,4 +1,4 @@
-﻿namespace Application.Handlers.TodoLists.Queries.GetTodos
+﻿namespace Application.Handlers.TodoItems.Queries.GetTodos
 {
     using MediatR;
 
@@ -21,7 +21,7 @@
             ItemId = itemId;
         }
 
-        public class GetTodoItemByIdQueryHandler : IRequestHandler<GetTodoItemByIdQuery, Result<GetUserTodoItemDto>> 
+        public class GetTodoItemByIdQueryHandler : IRequestHandler<GetTodoItemByIdQuery, Result<GetUserTodoItemDto>>
         {
             private readonly ICachedTodoService _todoService;
 
@@ -30,7 +30,7 @@
                 _todoService = todoService;
             }
 
-            public async Task<Result<GetUserTodoItemDto>> Handle(GetTodoItemByIdQuery request , CancellationToken cancellationToken) 
+            public async Task<Result<GetUserTodoItemDto>> Handle(GetTodoItemByIdQuery request, CancellationToken cancellationToken)
             {
                 var result = await _todoService.GetTodoItemByIdAsync(request.UserId, request.ListId, request.ItemId);
 

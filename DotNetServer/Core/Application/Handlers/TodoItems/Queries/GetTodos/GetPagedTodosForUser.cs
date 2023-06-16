@@ -1,4 +1,4 @@
-﻿namespace Application.Handlers.TodoLists.Queries.GetTodos
+﻿namespace Application.Handlers.TodoItems.Queries.GetTodos
 {
     using MediatR;
 

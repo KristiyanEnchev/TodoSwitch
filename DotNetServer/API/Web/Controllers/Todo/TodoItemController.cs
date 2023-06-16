@@ -14,10 +14,10 @@
 
     using Web.Extentions;
 
-    using Application.Handlers.TodoLists.Queries.GetTodos;
     using Application.Handlers.TodoLists.Commands.UpdateTodoItem;
     using Application.Handlers.TodoLists.Commands.DeleteTodoItem;
     using Application.Handlers.TodoLists.Commands.CreateTodoItem;
+    using Application.Handlers.TodoItems.Queries.GetTodos;
 
     [Authorize]
     public class TodoItemController : ApiController
