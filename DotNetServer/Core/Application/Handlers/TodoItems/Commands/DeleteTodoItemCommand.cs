@@ -1,4 +1,4 @@
-﻿namespace Application.Handlers.TodoLists.Commands.DeleteTodoItem
+﻿namespace Application.Handlers.TodoItems.Commands
 {
     using MediatR;
 
@@ -19,7 +19,7 @@
             ItemId = itemId;
         }
 
-        public class DeleteTodoItemCommandHandler : IRequestHandler<DeleteTodoItemCommand, Result<string>> 
+        public class DeleteTodoItemCommandHandler : IRequestHandler<DeleteTodoItemCommand, Result<string>>
         {
             private readonly ICachedTodoService _service;
 
@@ -28,7 +28,7 @@
                 _service = service;
             }
 
-            public async Task<Result<string>> Handle(DeleteTodoItemCommand request, CancellationToken cancellationToken) 
+            public async Task<Result<string>> Handle(DeleteTodoItemCommand request, CancellationToken cancellationToken)
             {
                 var result = await _service.DeleteTodoItemAsync(request.UserId, request.ListId, request.ItemId);
 
