@@ -1,4 +1,4 @@
-﻿namespace Application.Handlers.TodoLists.Commands.UpdateTodoItem
+﻿namespace Application.Handlers.TodoItems.Commands.UpdateTodoItem
 {
     using MediatR;
 
