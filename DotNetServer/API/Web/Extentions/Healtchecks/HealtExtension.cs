@@ -28,6 +28,8 @@
             }
 
             healthChecks.AddCheck<ControllerHealthCheck>("controller_health_check");
+            healthChecks.AddCheck<CacheHealthCheck>("cache_health_check");
+            healthChecks.AddCheck<DiskSpaceHealthCheck>("disk_space_health_check", tags: new[] { "disk" });
 
             return services;
         }
@@ -67,6 +69,41 @@
                 catch (Exception ex)
                 {
                     return Task.FromResult(HealthCheckResult.Unhealthy("Cache health check failed", ex));
+                }
+            }
+        }
+
+        public class DiskSpaceHealthCheck : IHealthCheck
+        {
+            private readonly long _minimumFreeDiskSpace;
+            private readonly string _driveName;
+
+            public DiskSpaceHealthCheck(long minimumFreeDiskSpace, string driveName)
+            {
+                _minimumFreeDiskSpace = minimumFreeDiskSpace;
+                _driveName = driveName;
+            }
+
+            public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+            {
+                try
+                {
+                    var drive = DriveInfo.GetDrives().FirstOrDefault(d => d.Name.Equals(_driveName, StringComparison.OrdinalIgnoreCase));
+                    if (drive == null)
+                    {
+                        return Task.FromResult(HealthCheckResult.Unhealthy($"Drive '{_driveName}' not found"));
+                    }
+
+                    if (drive.AvailableFreeSpace >= _minimumFreeDiskSpace)
+                    {
+                        return Task.FromResult(HealthCheckResult.Healthy("Sufficient disk space available"));
+                    }
+
+                    return Task.FromResult(HealthCheckResult.Unhealthy($"Insufficient disk space. Available: {drive.AvailableFreeSpace / 1024 / 1024} MB"));
+                }
+                catch (Exception ex)
+                {
+                    return Task.FromResult(HealthCheckResult.Unhealthy("Disk space health check failed", ex));
                 }
             }
         }
