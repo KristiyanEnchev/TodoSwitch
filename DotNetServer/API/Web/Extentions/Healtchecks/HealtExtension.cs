@@ -1,5 +1,6 @@
 ﻿namespace Web.Extentions.Healtchecks
 {
+    using Application.Interfaces.Services;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Routing;
@@ -43,6 +44,30 @@
                 }
 
                 return Task.FromResult(HealthCheckResult.Unhealthy("Controller is unhealthy"));
+            }
+        }
+
+        public class CacheHealthCheck : IHealthCheck
+        {
+            private readonly ICachedTodoService _cachedTodoService;
+
+            public CacheHealthCheck(ICachedTodoService cachedTodoService)
+            {
+                _cachedTodoService = cachedTodoService;
+            }
+
+            public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+            {
+                try
+                {
+                    _cachedTodoService.InvalidateAllCache();
+
+                    return Task.FromResult(HealthCheckResult.Healthy("Cache is healthy"));
+                }
+                catch (Exception ex)
+                {
+                    return Task.FromResult(HealthCheckResult.Unhealthy("Cache health check failed", ex));
+                }
             }
         }
 
