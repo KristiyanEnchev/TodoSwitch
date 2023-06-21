@@ -29,7 +29,10 @@
 
             healthChecks.AddCheck<ControllerHealthCheck>("controller_health_check");
             healthChecks.AddCheck<CacheHealthCheck>("cache_health_check");
-            healthChecks.AddCheck<DiskSpaceHealthCheck>("disk_space_health_check", tags: new[] { "disk" });
+            healthChecks.AddCheck("disk_space_health_check",
+            new DiskSpaceHealthCheck(minimumFreeDiskSpace: 10L * 1024L * 1024L * 1024L, driveName: "C:\\"));
+            healthChecks.AddCheck("memory_health_check",
+            new MemoryHealthCheck(maxAllowedMemory: 1024L * 1024L * 1024L));
 
             return services;
         }
@@ -105,6 +108,28 @@
                 {
                     return Task.FromResult(HealthCheckResult.Unhealthy("Disk space health check failed", ex));
                 }
+            }
+        }
+
+        public class MemoryHealthCheck : IHealthCheck
+        {
+            private readonly long _maxAllowedMemory;
+
+            public MemoryHealthCheck(long maxAllowedMemory)
+            {
+                _maxAllowedMemory = maxAllowedMemory;
+            }
+
+            public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+            {
+                var memoryUsed = GC.GetTotalMemory(false);
+
+                if (memoryUsed <= _maxAllowedMemory)
+                {
+                    return Task.FromResult(HealthCheckResult.Healthy("Memory usage is within limits"));
+                }
+
+                return Task.FromResult(HealthCheckResult.Unhealthy($"Memory usage is too high. Current usage: {memoryUsed / 1024 / 1024} MB"));
             }
         }
 
