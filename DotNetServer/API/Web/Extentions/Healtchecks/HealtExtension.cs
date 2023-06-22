@@ -4,6 +4,7 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Routing;
+    using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -54,20 +55,30 @@
 
         public class CacheHealthCheck : IHealthCheck
         {
-            private readonly ICachedTodoService _cachedTodoService;
+            private readonly IMemoryCache _cache;
+            private readonly string _testCacheKey = "health_check_cache_key";
+            private readonly string _testCacheValue = "test_value";
 
-            public CacheHealthCheck(ICachedTodoService cachedTodoService)
+            public CacheHealthCheck(IMemoryCache cache)
             {
-                _cachedTodoService = cachedTodoService;
+                _cache = cache;
             }
 
             public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
             {
                 try
                 {
-                    _cachedTodoService.InvalidateAllCache();
+                    _cache.Set(_testCacheKey, _testCacheValue);
 
-                    return Task.FromResult(HealthCheckResult.Healthy("Cache is healthy"));
+                    if (_cache.TryGetValue(_testCacheKey, out string cachedValue))
+                    {
+                        if (cachedValue == _testCacheValue)
+                        {
+                            return Task.FromResult(HealthCheckResult.Healthy("Cache is healthy"));
+                        }
+                    }
+
+                    return Task.FromResult(HealthCheckResult.Unhealthy("Cache is not working as expected"));
                 }
                 catch (Exception ex)
                 {
