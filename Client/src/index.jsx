@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
 
 import App from './App.jsx';
+import Spinner from './components/spinner/Spinner.jsx';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -19,7 +20,7 @@ createRoot(document.getElementById('root')).render(
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <BrowserRouter>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Spinner></Spinner>}>
               <App />
             </Suspense>
           </BrowserRouter>
