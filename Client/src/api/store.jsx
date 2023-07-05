@@ -12,14 +12,19 @@ import {
 import storage from 'redux-persist/lib/storage';
 import { apiSlice } from './apiSlice.jsx';
 
+import authReducer from '../features/auth/authSlice.jsx';
+import themeReducer from '../theme/themeSlice.jsx';
+
 const rootReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,
+  auth: authReducer,
+  theme: themeReducer,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: [],
+  whitelist: ['auth', 'theme'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

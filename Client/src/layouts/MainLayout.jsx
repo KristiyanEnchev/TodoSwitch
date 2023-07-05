@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { SEO } from 'components';
 import { Footer } from '../components/index.jsx';
+import ThemingProvider from '../theme/ThemeProvider.jsx';
 
 const MainLayout = ({ children }) => (
   <>
@@ -19,8 +20,10 @@ const MainLayout = ({ children }) => (
       siteName="Todo Switch"
     />{' '}
     <div className="flex flex-col min-h-screen">
-      <main className="flex-grow bg-gray-300 dark:bg-black">{children}</main>
-      <Footer />
+      <ThemingProvider>
+        <main className="flex-grow bg-gray-300 dark:bg-black">{children}</main>
+        <Footer />
+      </ThemingProvider>
     </div>
   </>
 );

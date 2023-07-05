@@ -1,6 +1,8 @@
 import { memo } from 'react';
+import { useSelector } from 'react-redux';
 
 const Footer = () => {
+  const { currentColor } = useSelector((state) => state.theme);
   const social = [
     {
       id: 1,
@@ -36,8 +38,11 @@ const Footer = () => {
             })}
           </ul>
         </div>
-        <span>© {new Date().getFullYear()} Copyright:</span>
+        <span style={{ color: currentColor }}>
+          © {new Date().getFullYear()} Copyright:
+        </span>
         <a
+          style={{ color: currentColor }}
           className="ml-2"
           target="_blank"
           rel="noreferrer"
