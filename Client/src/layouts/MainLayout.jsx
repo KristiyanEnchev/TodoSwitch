@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import { SEO } from 'components';
-import { Footer } from '../components/index.jsx';
+import { Navbar, Footer } from '../components';
 import ThemingProvider from '../theme/ThemeProvider.jsx';
+import { SEO } from 'components';
 
 const MainLayout = ({ children }) => (
   <>
@@ -21,6 +21,7 @@ const MainLayout = ({ children }) => (
     />{' '}
     <div className="flex flex-col min-h-screen">
       <ThemingProvider>
+        <Navbar />
         <main className="flex-grow bg-gray-300 dark:bg-black">{children}</main>
         <Footer />
       </ThemingProvider>

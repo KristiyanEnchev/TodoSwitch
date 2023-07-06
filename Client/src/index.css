@@ -14,3 +14,6 @@ html {
   top: 0;
   width: 100%;
 }
+.dashboard {
+  min-height: 79.5vh;
+}
