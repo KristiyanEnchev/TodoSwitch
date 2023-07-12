@@ -3,6 +3,7 @@ import PublicRoute from './components/auth/PublicRoute.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import Home from './pages/Home.jsx';
 import Login from './pages/login/Login.jsx';
+import PageNotFound from './pages/PageNotFound.jsx';
 
 const AppRouter = () => {
   return (
@@ -16,7 +17,7 @@ const AppRouter = () => {
       </Route>
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
-      <Route path="*" element={<div>Page Not Found</div>} />
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 };
