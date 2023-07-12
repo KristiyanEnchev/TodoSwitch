@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import PublicRoute from './components/auth/PublicRoute.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
+import Home from './pages/Home.jsx';
 
 const AppRouter = () => {
   return (
@@ -12,8 +13,8 @@ const AppRouter = () => {
       <Route element={<ProtectedRoute />}>
         <Route path="/ToDo" element={<div>ToDo</div>} />
       </Route>
-      <Route path="/" element={<div>Home</div>} />
-      <Route path="/home" element={<div>Home</div>} />
+      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
       <Route path="*" element={<div>Page Not Found</div>} />
     </Routes>
   );
