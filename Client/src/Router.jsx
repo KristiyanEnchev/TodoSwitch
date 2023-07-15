@@ -4,13 +4,14 @@ import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import Home from './pages/Home.jsx';
 import Login from './pages/login/Login.jsx';
 import PageNotFound from './pages/PageNotFound.jsx';
+import Register from './pages/register/Register.jsx';
 
 const AppRouter = () => {
   return (
     <Routes>
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<div>Register</div>} />
+        <Route path="/register" element={<Register />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/ToDo" element={<div>ToDo</div>} />
