@@ -1,5 +1,6 @@
 import { apiSlice } from '../../api/apiSlice.jsx';
 import { setTodoLists } from '../todoLists/todoListSlice.jsx';
+import { setColors } from '../todoLists/colorsSlice.jsx';
 
 export const todoListsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -25,6 +26,7 @@ export const todoListsApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+          dispatch(setColors(data));
         } catch (error) {
           console.error('Error fetching todo list colors:', error);
         }
