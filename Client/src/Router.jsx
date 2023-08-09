@@ -5,6 +5,7 @@ import Home from './pages/Home.jsx';
 import Login from './pages/login/Login.jsx';
 import PageNotFound from './pages/PageNotFound.jsx';
 import Register from './pages/register/Register.jsx';
+import Dashboard from './pages/Dashboard.jsx';
 
 const AppRouter = () => {
   return (
@@ -14,7 +15,7 @@ const AppRouter = () => {
         <Route path="/register" element={<Register />} />
       </Route>
       <Route element={<ProtectedRoute />}>
-        <Route path="/ToDo" element={<div>ToDo</div>} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Route>
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />

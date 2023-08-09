@@ -9,8 +9,8 @@ import ColorPicker from '../../components/pickers/ColorPicker.jsx';
 import CustomEmojiPicker from '../../components/pickers/CustomEmojiPicker.jsx';
 import { openModal, closeModal } from '../../features/modal/modalSlice.jsx';
 import DeleteConfirmation from '../../components/modal/DeleteConfirmation.jsx';
-import DraggableList from '../Items/DraggableList.jsx';
 import { Button } from '../../components/index.jsx';
+import DraggableList from '../../components/draggable/DraggableList.jsx';
 
 const Sidebar = ({
   lists,
