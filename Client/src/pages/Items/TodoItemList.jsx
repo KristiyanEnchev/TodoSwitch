@@ -1,5 +1,6 @@
-import { memo, useState, useMemo } from 'react';
+import { memo, useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import TodoItemTitle from './TodoItemTitle.jsx';
 
 const TodoItemList = ({
   title,
@@ -12,6 +13,7 @@ const TodoItemList = ({
   onSaveOrder,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingTask, setEditingTask] = useState(null);
 
   const filteredTasks = useMemo(
     () =>
@@ -31,8 +33,22 @@ const TodoItemList = ({
     [filteredTasks]
   );
 
+  const handleCreate = useCallback(() => {
+    setEditingTask(null);
+  }, []);
+
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mb-4"></div>
+    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mb-4">
+      <TodoItemTitle
+        color={color}
+        title={title}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        handleCreate={handleCreate}
+        completedTasks={completedTasks}
+        filteredTasks={filteredTasks}
+      />
+    </div>
   );
 };
 
