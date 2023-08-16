@@ -3,8 +3,12 @@ import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import Sidebar from './side/Sidebar.jsx';
+import TodoItemList from './Items/TodoItemList.jsx';
 import { setSelectedList } from '../features/todoLists/selectedListSlice.jsx';
 import { Spinner } from '../components/index.jsx';
+import { removeTodoItem } from '../features/todoItems/todoItemSlice.jsx';
+import { useReorderMutation } from '../features/todoItems/todoItemsApiSlice.jsx';
+import { useReorderListMutation } from '../features/todoLists/apiTodoListSlice.jsx';
 import {
   useFetchDashboardData,
   useFetchTodoItemsData,
@@ -14,12 +18,14 @@ import {
   updateTodoList as updateTodoListAction,
   removeTodoList,
 } from '../features/todoLists/todoListSlice.jsx';
-import { useReorderListMutation } from '../features/todoLists/apiTodoListSlice.jsx';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const selectedList = useSelector((state) => state.selectedList);
+
+  const [reorderTasks] = useReorderMutation();
+  const tasks = useSelector((state) => state.todoItems);
 
   const [reorderList] = useReorderListMutation();
   const lists = useSelector((state) => state.todoLists);
@@ -33,10 +39,15 @@ const Dashboard = () => {
     deleteTodoList,
   } = useFetchDashboardData(user.Id);
 
-  const { todoItems, isLoading: isLoadingItems } = useFetchTodoItemsData(
-    user.Id,
-    selectedList
-  );
+  const {
+    todoItems,
+    isLoading: isLoadingItems,
+    refetch,
+    createTodoItem,
+    toggleTodoStatus,
+    updateTodoItem,
+    deleteTodoItem,
+  } = useFetchTodoItemsData(user.Id, selectedList);
 
   useEffect(() => {
     if (todoLists?.length > 0 && !selectedList) {
@@ -87,6 +98,103 @@ const Dashboard = () => {
     [user.Id, selectedList, todoLists, deleteTodoList, dispatch]
   );
 
+  const handleToggleTask = useCallback(
+    async (id) => {
+      try {
+        await toggleTodoStatus({
+          userId: user.Id,
+          listId: selectedList?.id,
+          itemId: id,
+        }).unwrap();
+        refetch();
+      } catch (error) {
+        console.error('Error toggling task status:', error);
+      }
+    },
+    [user.Id, selectedList, toggleTodoStatus, refetch]
+  );
+
+  const handleDeleteTask = useCallback(
+    async (id) => {
+      try {
+        await deleteTodoItem({
+          userId: user.Id,
+          listId: selectedList?.id,
+          itemId: id,
+        }).unwrap();
+        dispatch(removeTodoItem(id));
+      } catch (error) {
+        console.error('Error deleting task:', error);
+      }
+    },
+    [user.Id, selectedList, deleteTodoItem, dispatch]
+  );
+
+  const handleEditTask = useCallback(
+    async (id, updatedData) => {
+      try {
+        await updateTodoItem({
+          userId: user.Id,
+          listId: selectedList?.id,
+          itemId: id,
+          title: updatedData.title,
+          note: updatedData.note,
+          priority: updatedData.priority,
+        }).unwrap();
+        refetch();
+      } catch (error) {
+        console.error('Error editing task:', error);
+      }
+    },
+    [user.Id, selectedList, updateTodoItem, refetch]
+  );
+
+  const handleCreateTask = useCallback(
+    async (taskData) => {
+      try {
+        const todo = { ...taskData, listId: selectedList?.id };
+        await createTodoItem({
+          todo,
+          userId: user.Id,
+        }).unwrap();
+        refetch();
+      } catch (error) {
+        console.error('Error creating task:', error);
+      }
+    },
+    [user.Id, selectedList, createTodoItem, refetch]
+  );
+
+  const handleSaveOrder = useCallback(
+    async (reorderedTasks) => {
+      if (!reorderedTasks || !tasks) {
+        return;
+      }
+
+      const changedItems = {};
+      reorderedTasks.forEach((reorderedTask, newIndex) => {
+        const originalTask = tasks.find((task) => task.id === reorderedTask.id);
+        if (originalTask && originalTask.orderIndex !== newIndex) {
+          changedItems[reorderedTask.id] = newIndex;
+        }
+      });
+
+      if (Object.keys(changedItems).length > 0) {
+        try {
+          await reorderTasks({
+            userId: user.Id,
+            listId: selectedList?.id,
+            changedItems: changedItems,
+          });
+        } catch (error) {
+          console.error('Failed to save new order:', error);
+          toast.error('Failed to save new order:', error);
+        }
+      }
+    },
+    [reorderTasks, user.Id, selectedList?.id, tasks]
+  );
+
   const handleSaveOrderList = useCallback(
     async (reorderedList) => {
       if (!reorderedList || !lists) {
@@ -119,6 +227,8 @@ const Dashboard = () => {
 
   if (isLoading || isLoadingItems) return <Spinner />;
 
+  const color = selectedList?.color?.code || 'transparent';
+
   return (
     <div className="flex dashboard">
       {todoLists && colors ? (
@@ -135,7 +245,16 @@ const Dashboard = () => {
       )}
       <div className="flex-grow p-4 bg-gray-300 dark:bg-black dark:text-white text-black border-l border-gray-400 dark:border-gray-700 shadow-inner">
         {selectedList && todoItems.data ? (
-          <div>TodoList here</div>
+          <TodoItemList
+            title={selectedList.title}
+            tasks={todoItems.data}
+            onToggleTask={handleToggleTask}
+            onDeleteTask={handleDeleteTask}
+            onEditTask={handleEditTask}
+            onCreateTask={handleCreateTask}
+            color={color}
+            onSaveOrder={handleSaveOrder}
+          />
         ) : (
           <div>Select a list or create a new Item to get started!</div>
         )}
