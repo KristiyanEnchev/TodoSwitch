@@ -1,6 +1,6 @@
 import { memo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import TaskItem from './TaskItem.jsx';
+import TodoItem from './TodoItem.jsx';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
 
@@ -26,7 +26,7 @@ const CompletedTaskList = ({ tasks, onToggle, onDelete, onEdit }) => {
       {open && (
         <ul className="mt-2">
           {tasks.map((task) => (
-            <TaskItem
+            <TodoItem
               key={task.id}
               task={task}
               onToggle={onToggle}
