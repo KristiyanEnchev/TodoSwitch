@@ -208,7 +208,6 @@ const Dashboard = () => {
           changedList[reorderedList.id] = newIndex;
         }
       });
-      console.log(changedList);
 
       if (Object.keys(changedList).length > 0) {
         try {

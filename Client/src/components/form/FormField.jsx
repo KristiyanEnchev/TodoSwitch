@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import PasswordStrengthBar from 'react-password-strength-bar';
 
 const FormField = memo(
-  ({ label, type, value, onChange, onFocus, error, ...props }) => {
+  ({ label, type, value, onChange, onFocus, error, id, ...props }) => {
     const [showPassword, setShowPassword] = useState(false);
     const isPasswordField = type === 'password' || type === 'confirmPassword';
     const inputType = isPasswordField
@@ -18,8 +18,11 @@ const FormField = memo(
     return (
       <div className="mb-2">
         <div className="relative">
-          <label className="text-gray-400 block mb-1">{label}</label>
+          <label htmlFor={id} className="text-gray-400 block mb-1">
+            {label}
+          </label>
           <input
+            id={id}
             type={inputType}
             value={value}
             onChange={onChange}
@@ -48,11 +51,12 @@ FormField.displayName = 'FormField';
 
 FormField.propTypes = {
   label: PropTypes.string.isRequired,
-  type: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
+  type: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
   onFocus: PropTypes.func,
   error: PropTypes.string,
+  id: PropTypes.string.isRequired,
 };
 
 export default FormField;

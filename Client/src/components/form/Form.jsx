@@ -51,6 +51,7 @@ const Form = memo(
             onChange={createChangeHandler(name, () => clearError(name))}
             onFocus={() => clearError(name)}
             error={getFieldError(name)}
+            id={name}
           />
         ))}
         <button

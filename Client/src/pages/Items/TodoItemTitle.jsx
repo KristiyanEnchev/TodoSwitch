@@ -37,6 +37,7 @@ const TodoItemTitle = ({
           transition={{ duration: 0.5 }}
         >
           <input
+            id="search"
             type="text"
             placeholder="Search tasks..."
             value={searchTerm}
