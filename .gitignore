@@ -13,6 +13,15 @@
 
 *.vs
 
+# Ignore app settings for different environments
+*appsettings.*.json
+
+# Ignore environment files
+*.env
+
+# Ignore other sensitive files
+*secrets.json
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -145,7 +154,7 @@ publish/
 *.[Pp]ublish.xml
 *.azurePubxml
 
-# TODO: Un-comment the next line if you do not want to checkin 
+# TODO: Un-comment the next line if you do not want to checkin
 # your web deploy settings because they may include unencrypted
 # passwords
 #*.pubxml
@@ -251,3 +260,5 @@ ModelManifest.xml
 /.vs/VSWorkspaceState.json
 /Multitenant.API/Multitenant.Host/ssl/private_key_unencrypted.pem
 /Multitenant.API/Multitenant.Host/ssl/ssl_certificate.crt
+/Client/.env
+.env

@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+
+  api:
+    build:
+      context: ./DotNetServer
+      dockerfile: ./API/Host/Dockerfile
+    container_name: dotnet-api
+    ports:
+      - '5069:80'
+    depends_on:
+      - mongodb
+    environment:
+      - DOTNET_ENVIRONMENT=PROD
+      - ConnectionStrings__DefaultConnection=${PROD_DB_CONNECTION_STRING}
+      - Health__databaseHealthChecks=${PROD_DATABASE_HEALTH_CHECKS}
+      - TokenSettings__Key=${PROD_TOKEN_KEY}
+      - TokenSettings__Issuer=${PROD_TOKEN_ISSUER}
+      - TokenSettings__Audience=${PROD_TOKEN_AUDIENCE}
+      - TokenSettings__DurationInMinutes=${PROD_TOKEN_DURATION}
+    networks:
+      - app-network
+
+  client:
+    build:
+      context: ./Client
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+    container_name: react-client
+    ports:
+      - '5173:80'
+    depends_on:
+      - api
+    environment:
+      - NODE_ENV=PROD
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
