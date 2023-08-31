@@ -1,4 +1,4 @@
-﻿namespace Web.Extentions.Logging
+﻿namespace Web.Extensions.Logging
 {
     using Microsoft.AspNetCore.Builder;
 

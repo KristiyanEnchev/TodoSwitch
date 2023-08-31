@@ -18,9 +18,9 @@
     using Persistence;
 
     using Web.Services;
-    using Web.Extentions.Swagger;
-    using Web.Extentions.Healtchecks;
-    using Web.Extentions.Middleware;
+    using Web.Extensions.Healtchecks;
+    using Web.Extensions.Middleware;
+    using Web.Extensions.Swagger;
 
     public static class Startup
     {

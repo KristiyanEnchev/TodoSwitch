@@ -12,11 +12,11 @@
 
     using Shared;
 
-    using Web.Extentions;
-
     using Application.Handlers.TodoItems.Queries.GetTodos;
     using Application.Handlers.TodoItems.Commands;
     using Application.Handlers.TodoItems.Commands.UpdateTodoItem;
+
+    using Web.Extensions;
 
     [Authorize]
     public class TodoItemController : ApiController

@@ -1,4 +1,4 @@
-﻿namespace Web.Extentions.Healtchecks
+﻿namespace Web.Extensions.Healtchecks
 {
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;

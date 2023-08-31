@@ -1,4 +1,4 @@
-﻿namespace Web.Extentions.Swagger
+﻿namespace Web.Extensions.Swagger
 {
     using Microsoft.OpenApi.Models;
     using Microsoft.AspNetCore.Builder;

@@ -10,12 +10,12 @@
 
     using Models.Todo;
 
-    using Web.Extentions;
-
     using Application.Handlers.TodoLists.Queries.GetList;
     using Application.Handlers.TodoLists.Commands.CreateList;
     using Application.Handlers.TodoLists.Commands.DeleteList;
     using Application.Handlers.TodoLists.Commands.UpdateTodoList;
+
+    using Web.Extensions;
 
     [Authorize]
     public class TodoListController : ApiController

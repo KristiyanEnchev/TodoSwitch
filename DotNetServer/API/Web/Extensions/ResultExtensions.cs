@@ -1,4 +1,4 @@
-﻿namespace Web.Extentions
+﻿namespace Web.Extensions
 {
     using System.Threading.Tasks;
 
@@ -23,7 +23,7 @@
             {
                 if (result.Errors != null)
                 {
-                    return new BadRequestObjectResult(new { Errors = response.errors});
+                    return new BadRequestObjectResult(new { Errors = response.errors });
                 }
                 return new BadRequestObjectResult("Unexpected Error occured");
             }

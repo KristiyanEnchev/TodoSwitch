@@ -1,4 +1,4 @@
-﻿namespace Web.Extentions.Middleware
+﻿namespace Web.Extensions.Middleware
 {
     using System;
     using System.Net;

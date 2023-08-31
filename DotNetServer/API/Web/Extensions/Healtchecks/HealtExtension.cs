@@ -1,6 +1,5 @@
-﻿namespace Web.Extentions.Healtchecks
+﻿namespace Web.Extensions.Healtchecks
 {
-    using Application.Interfaces.Services;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
     using Microsoft.AspNetCore.Routing;

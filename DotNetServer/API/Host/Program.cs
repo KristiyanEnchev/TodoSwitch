@@ -7,7 +7,7 @@ namespace Host
     using Infrastructure;
 
     using Web;
-    using Web.Extentions.Logging;
+    using Web.Extensions.Logging;
 
     public class Program
     {

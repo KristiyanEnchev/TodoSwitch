@@ -5,8 +5,6 @@
 
     using Swashbuckle.AspNetCore.Annotations;
 
-    using Web.Extentions;
-
     using Shared;
 
     using Application.Handlers.Identity.Common;
@@ -14,6 +12,8 @@
     using Application.Handlers.Identity.Commands.Logout;
     using Application.Handlers.Identity.Commands.Refresh;
     using Application.Handlers.Identity.Commands.Register;
+
+    using Web.Extensions;
 
     public class IdentityController : ApiController
     {
