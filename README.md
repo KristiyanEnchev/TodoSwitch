@@ -5,7 +5,7 @@
 TodoSwitch is a robust task management system, crafted with **.NET 7** on the backend and **React 18** on the frontend. Leveraging **Clean Architecture** and **Domain-Driven Design (DDD)**, this project is structured for scalability and maintainability. It’s containerized with **Docker** and serves the UI through **Nginx**.
 
 <p align="center">
-<img src="https://github.com/KristiyanEnchev/TodoSwitch/Client/src/assets/TodoSwitch.PNG" alt="banner">
+<img src="[https://github.com/KristiyanEnchev/TodoSwitch/Client/src/assets/TodoSwitch.PNG](https://github.com/KristiyanEnchev/TodoSwitch/blob/main/Client/src/assets/TodoSwitch.PNG)" alt="banner">
 </p>
 
 ## 👀 Try it out
