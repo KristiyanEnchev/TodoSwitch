@@ -12,8 +12,14 @@ TodoSwitch is a robust task management system, crafted with **.NET 7** on the ba
 
 ```bash
 git clone https://github.com/KristiyanEnchev/TodoSwitch.git
+```
+```bash
 cd TodoSwitch/
-create .env file and copy the content of .env.example in it
+```
+```bash
+cp .env.example .env
+```
+```bash
 docker-compose up --build -d
 ```
 
